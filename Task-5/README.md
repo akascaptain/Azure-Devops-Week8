@@ -1,178 +1,132 @@
-
-````
-# Azure DevOps Pipelines: Creating a Linux/Windows Self-Hosted Agent
+# Azure DevOps: Creating a Linux/Windows Self-Hosted Agent
 
 ## Overview
-This repository provides a detailed guide to setting up a **self-hosted agent** (Linux or Windows) for Azure DevOps Pipelines. A self-hosted agent is a machine you configure to run CI/CD jobs from your pipelines, giving you complete control over the environment, software, and hardware resources.
 
----
+Self-hosted agents in Azure DevOps provide flexibility by allowing you to run your pipelines on your own machines — whether Linux or Windows — giving you control over the environment, tools, and configurations used during builds and deployments.
+
+This guide walks through setting up a self-hosted agent on both Linux and Windows platforms.
 
 ## Objectives
-- Understand what a self-hosted agent is and why it is used.
-- Install and configure a self-hosted agent on **Linux** or **Windows**.
-- Connect the agent to an Azure DevOps organization.
-- Run pipelines using the self-hosted agent.
 
----
+- Understand the purpose and benefits of self-hosted agents.
+- Set up and configure an Azure DevOps agent on Linux.
+- Set up and configure an Azure DevOps agent on Windows.
+- Register the agent with your Azure DevOps organization.
+- Run and verify pipeline jobs using the self-hosted agent.
 
 ## Prerequisites
-- An **Azure DevOps Organization** and **Project**.
-- Administrative privileges on the machine where the agent will be installed.
-- A supported OS:
-  - **Windows**: Windows 10/11 or Windows Server 2016/2019/2022.
-  - **Linux**: Ubuntu, CentOS, RHEL, or Debian.
-- **.NET Core 6+** installed (for Linux agents).
-- A personal access token (PAT) from Azure DevOps with required scopes:
-  - **Agent Pools (Read & manage)**.
-  - **Deployment Groups (Read & manage)** (if applicable).
 
----
+- A physical or virtual machine running a supported version of Linux or Windows.
+- Administrative or root access to the machine.
+- Internet connectivity from the agent machine to Azure DevOps.
+- An Azure DevOps organization and project.
+- Permissions to create or manage agent pools.
 
-## Steps to Create a Self-Hosted Agent
+## Creating a Self-Hosted Agent
 
-### Step 1: Create a Personal Access Token (PAT)
-1. Go to your Azure DevOps organization.
-2. Navigate to **User settings > Personal access tokens**.
-3. Click **+ New Token**.
-4. Add scopes: **Agent Pools (Read & Manage)**.
-5. Save and copy the token (you will need it later).
+### Step 1: Create or Choose an Agent Pool
 
----
+1. Navigate to **Project Settings > Agent Pools** in your Azure DevOps project.
+2. Create a new agent pool or choose an existing one (e.g., `SelfHostedPool`).
 
-### Step 2: Create an Agent Pool
-1. Navigate to **Organization settings > Agent Pools**.
-2. Click **Add pool**.
-3. Provide a name (e.g., `SelfHostedPool`) and save.
+### Step 2: Download and Configure the Agent
 
----
+#### Linux Agent Setup
 
-### Step 3: Download the Agent Package
-1. Go to **Project Settings > Agent pools**.
-2. Select the newly created pool.
-3. Click **New Agent**.
-4. Choose **Windows** or **Linux** and download the agent package.
-
----
-
-## Windows Self-Hosted Agent Setup
-
-### Step 4: Extract and Configure
-1. Extract the agent package (e.g., `C:\agent`).
-2. Open **Command Prompt** or **PowerShell** and run:
-   ```powershell
-   cd C:\agent
-   .\config.cmd
-````
-
-3. Provide:
-
-   * Azure DevOps server URL (e.g., `https://dev.azure.com/your-org`).
-   * PAT token.
-   * Agent pool name (`SelfHostedPool`).
-   * Agent name (e.g., `win-agent-01`).
-   * Work folder (default: `_work`).
-
-### Step 5: Run the Agent
-
-* Start the agent interactively:
-
-  ```powershell
-  .\run.cmd
-  ```
-* To run as a Windows Service:
-
-  ```powershell
-  .\svc install
-  .\svc start
-  ```
-
----
-
-## Linux Self-Hosted Agent Setup
-
-### Step 4: Extract and Configure
-
-1. Extract the package:
+1. SSH into your Linux machine.
+2. Install prerequisites (example for Ubuntu):
 
    ```bash
-   tar zxvf vsts-agent-linux-x64-*.tar.gz
-   cd ./vsts-agent-linux-x64-*
+   sudo apt-get update
+   sudo apt-get install -y libssl-dev libcurl4 openssh-client unzip
    ```
-2. Run configuration:
+
+3. Create a directory for the agent and download the latest package:
+
+   ```bash
+   mkdir myagent && cd myagent
+   curl -O https://vstsagentpackage.azureedge.net/agent/3.236.1/vsts-agent-linux-x64-3.236.1.tar.gz
+   tar zxvf vsts-agent-linux-x64-3.236.1.tar.gz
+   ```
+
+4. Configure the agent:
 
    ```bash
    ./config.sh
    ```
-3. Provide:
 
-   * Azure DevOps server URL (e.g., `https://dev.azure.com/your-org`).
-   * PAT token.
-   * Agent pool name (`SelfHostedPool`).
-   * Agent name (e.g., `linux-agent-01`).
-   * Work folder (default: `_work`).
+   Provide:
+   - Azure DevOps URL (e.g., `https://dev.azure.com/yourorganization`)
+   - Personal Access Token (PAT)
+   - Agent pool name
+   - Agent name
+   - Work folder (default `_work`)
 
-### Step 5: Run the Agent
+5. Install and start the agent as a service:
 
-* Start the agent interactively:
+   ```bash
+   sudo ./svc.sh install
+   sudo ./svc.sh start
+   ```
 
-  ```bash
-  ./run.sh
+#### Windows Agent Setup
+
+1. Download the Windows agent from:
+
+   [https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/windows-agent](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/windows-agent)
+
+2. Extract the zip file to a directory (e.g., `C:\agent`).
+
+3. Open Command Prompt as Administrator, navigate to the agent directory:
+
+   ```cmd
+   cd C:\agent
+   config.cmd
+   ```
+
+4. Enter the details when prompted:
+   - Azure DevOps URL
+   - Personal Access Token (PAT)
+   - Agent pool name
+   - Agent name
+   - Work folder (default `_work`)
+
+5. Install and start the agent service:
+
+   ```cmd
+   .\svc install
+   .\svc start
+   ```
+
+### Step 3: Verify the Agent
+
+- In Azure DevOps, go to **Project Settings > Agent Pools**.
+- Select your agent pool to see the new agent status. It should be **online** and **idle**.
+- Use this agent in your pipeline YAML by specifying:
+
+  ```yaml
+  pool:
+    name: SelfHostedPool
   ```
-* Install and start as a service:
-
-  ```bash
-  sudo ./svc.sh install
-  sudo ./svc.sh start
-  ```
-
----
-
-## Verify the Agent
-
-* Go to **Project Settings > Agent pools > SelfHostedPool**.
-* Check if your agent status is **Online**.
-
----
-
-## Usage in Pipelines
-
-Reference the self-hosted agent in your YAML pipeline:
-
-```yaml
-trigger:
-- main
-
-pool:
-  name: SelfHostedPool
-
-steps:
-- script: echo "Running on self-hosted agent"
-```
-
----
 
 ## Best Practices
 
-* Keep the machine updated with necessary build and deployment tools.
-* Run the agent as a dedicated service account with least privileges.
-* Use separate agents for different environments (Dev, Test, Prod).
-* Regularly update the agent software to the latest version.
-* Monitor the agent logs and health for failures.
-
----
+- Run agents with minimal required permissions.
+- Secure the machine and network hosting the agent.
+- Regularly update the agent to the latest version.
+- Use agent tags to manage workloads efficiently.
+- Monitor agent health and logs for troubleshooting.
 
 ## Resources
 
-* [Set up a Linux self-hosted agent (Microsoft Docs)](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/linux-agent?view=azure-devops&tabs=IP-V4)
-* [Video: Azure DevOps Test Plans & Agents](https://www.youtube.com/watch?v=Cu7zx9u1sOE)
-
----
+- [Linux Agent Setup - Microsoft Docs](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/linux-agent?view=azure-devops&tabs=IP-V4)
+- [Windows Agent Setup - Microsoft Docs](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/windows-agent?view=azure-devops)
+- [Azure DevOps Agents Video Tutorial](https://www.youtube.com/watch?v=Cu7zx9u1sOE)
 
 ## Author
 
-**Akash Shinde**
-B.Tech CSE (Data Science), R. C. Patel Institute of Technology
-CSI ID: **CT\_CSI\_DV\_4920**
-Email: **[221106045@rcpit.ac.in]**
-
+**Akash Shinde**  
+B.Tech CSE (Data Science), R. C. Patel Institute of Technology  
+CSI ID: **CT_CSI_DV_4920**  
+Email: **221106045@rcpit.ac.in**
 
