@@ -1,21 +1,21 @@
 
-# 📊 Azure DevOps: Configuring Dashboards and Work Item Queries
+#  Azure DevOps: Configuring Dashboards and Work Item Queries
 
 This document provides a concise and practical guide to **configure dashboards and create work item queries** in **Azure DevOps** for tracking progress, visualizing data, and improving collaboration.
 
 ---
 
-## 🔍 Work Item Queries
+##  Work Item Queries
 
 Queries in Azure DevOps allow you to filter, find, and organize work items based on conditions.
 
-### ✅ Query Types
+###  Query Types
 
 * **Flat List**: Displays a simple list of work items.
 * **Tree of Work Items**: Shows parent-child hierarchy (e.g., Epics > Features > Stories).
 * **Direct Links**: Displays linked work items based on specific relationships.
 
-### 🛠️ Creating a Query
+###  Creating a Query
 
 1. Go to **Boards** → **Queries**.
 2. Select **New Query**.
@@ -29,11 +29,11 @@ Queries in Azure DevOps allow you to filter, find, and organize work items based
 
 ---
 
-## 📈 Dashboards
+## Dashboards
 
 Azure DevOps Dashboards allow you to monitor project progress with real-time widgets and reports.
 
-### 📋 Steps to Configure a Dashboard
+###  Steps to Configure a Dashboard
 
 1. Navigate to your Project → **Overview** → **Dashboards**.
 2. Create a new dashboard or edit an existing one.
@@ -48,14 +48,14 @@ Azure DevOps Dashboards allow you to monitor project progress with real-time wid
    * Set refresh intervals.
    * Choose display format (e.g., pie chart, bar graph).
 
-### 🔒 Permissions
+###  Permissions
 
 * Only users with edit rights can modify dashboards.
 * Widget visibility respects query access permissions.
 
 ---
 
-## 📌 Example Use Case
+##  Example Use Case
 
 **Goal**: Track all open bugs in the current sprint.
 
@@ -74,7 +74,7 @@ Azure DevOps Dashboards allow you to monitor project progress with real-time wid
 
 ---
 
-## ✅ Key Benefits
+##  Key Benefits
 
 * Centralized and real-time reporting.
 * Improved visibility and transparency.
@@ -83,7 +83,7 @@ Azure DevOps Dashboards allow you to monitor project progress with real-time wid
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 * [Using Queries in Azure DevOps (Microsoft Docs)](https://learn.microsoft.com/en-us/azure/devops/boards/queries/using-queries?view=azure-devops&tabs=browser)
 * [Azure DevOps Dashboards Overview](https://learn.microsoft.com/en-us/azure/devops/report/dashboards/overview?view=azure-devops)
@@ -91,7 +91,7 @@ Azure DevOps Dashboards allow you to monitor project progress with real-time wid
 
 ---
 
-## 👤 Author
+##  Author
 
 **Akash Shinde**
 CSI ID: `CT_CSI_DV_4920`
